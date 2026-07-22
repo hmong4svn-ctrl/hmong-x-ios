@@ -1,0 +1,14 @@
+{
+  "appId": "com.hmongx.app",
+  "appName": "HMONG X",
+  "webDir": "www",
+  "server": {
+    "url": "https://hmongx.com",
+    "cleartext": false,
+    "allowNavigation": ["hmongx.com", "*.hmongx.com", "accounts.google.com", "*.google.com", "*.facebook.com", "connect.facebook.net"]
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0d1836"
+  }
+}
