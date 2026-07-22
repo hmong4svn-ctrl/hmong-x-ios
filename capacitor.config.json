@@ -10,5 +10,19 @@
   "ios": {
     "contentInset": "always",
     "backgroundColor": "#0d1836"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#0d1836",
+      "showSpinner": false,
+      "launchAutoHide": true
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Keyboard": {
+      "resize": "native"
+    }
   }
 }
