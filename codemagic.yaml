@@ -25,3 +25,23 @@ workflows:
             build
     artifacts:
       - ios/App/build/Build/Products/**/*.app
+
+  android-apk:
+    name: HMONG X Android APK
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 22
+      java: 21
+    scripts:
+      - name: Cai dat npm
+        script: npm install
+      - name: Capacitor sync Android
+        script: npx cap sync android
+      - name: Build APK (debug - cai thang duoc, khong can ky)
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/**/*.apk
