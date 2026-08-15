@@ -47,9 +47,12 @@ workflows:
       node: 22
       xcode: latest
       cocoapods: default
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.hmongx.app
+      # ⚠️ KHONG dung khoi "ios_signing" o day.
+      # Khoi do bat Codemagic di TIM provisioning profile CO SAN truoc khi chay script,
+      # tai khoan moi thi chua co profile nao → build chet ngay voi loi
+      # "No matching profiles found for bundle identifier ... and distribution type app_store"
+      # (dinh that 15/08/2026, build #1).
+      # Thay vao do de buoc "Lay chung chi + profile ky code" ben duoi tu TAO bang --create.
       vars:
         BUNDLE_ID: "com.hmongx.app"
         APP_STORE_APPLE_ID: "6801789131"   # Apple ID cua app tren App Store Connect (tao 15/08/2026)
@@ -58,9 +61,12 @@ workflows:
         script: npm install
       - name: Capacitor sync iOS
         script: npx cap sync ios
-      - name: Lay chung chi + profile ky code
+      - name: Lay chung chi + profile ky code (tu TAO neu chua co)
         script: |
+          set -e
           keychain initialize
+          # --create: neu tai khoan chua co certificate/profile thi TU TAO moi.
+          # Thieu co nay la build chet o tai khoan Apple moi tinh.
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
