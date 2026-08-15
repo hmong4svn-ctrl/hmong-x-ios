@@ -65,11 +65,19 @@ workflows:
         script: |
           set -e
           keychain initialize
-          # --create: neu tai khoan chua co certificate/profile thi TU TAO moi.
-          # Thieu co nay la build chet o tai khoan Apple moi tinh.
+
+          # Build #2 chet o day: "Cannot save Signing Certificates without certificate private key".
+          # Ly do: tai khoan Apple moi tinh CHUA co distribution certificate nao, ma lenh
+          # fetch-signing-files chi biet DI LAY chung chi co san — no khong tu sinh private key.
+          # => Phai tao chung chi truoc. Lenh duoi TU SINH private key va luu lai.
+          # "|| true" de lan build sau (da co chung chi roi) khong bi dung.
+          app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+
+          # Gio moi lay/tao provisioning profile cho bundle id
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
+
           keychain add-certificates
           xcode-project use-profiles
       - name: Danh so ban dung (build number) tang dan
