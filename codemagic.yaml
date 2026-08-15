@@ -66,16 +66,25 @@ workflows:
           set -e
           keychain initialize
 
-          # Build #2 chet o day: "Cannot save Signing Certificates without certificate private key".
-          # Ly do: tai khoan Apple moi tinh CHUA co distribution certificate nao, ma lenh
-          # fetch-signing-files chi biet DI LAY chung chi co san — no khong tu sinh private key.
-          # => Phai tao chung chi truoc. Lenh duoi TU SINH private key va luu lai.
-          # "|| true" de lan build sau (da co chung chi roi) khong bi dung.
-          app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+          # Build #2 va #3 chet o day:
+          #   #2 "Cannot save Signing Certificates without certificate private key"
+          #   #3 "Cannot create resource without certificate private key"
+          # Ly do: tai khoan Apple moi CHUA co distribution certificate, va lenh
+          # app-store-connect KHONG tu sinh khoa RSA — no doi minh dua khoa vao
+          # de ky yeu cau tao chung chi (CSR).
+          # => Sinh khoa RSA ngay tai day roi truyen vao ca 2 lenh.
+          ssh-keygen -t rsa -b 2048 -m PEM -f /tmp/hmongx_cert_key -q -N ""
 
-          # Gio moi lay/tao provisioning profile cho bundle id
+          # Tao distribution certificate (bo qua neu da co)
+          app-store-connect certificates create \
+            --type IOS_DISTRIBUTION \
+            --certificate-key=@file:/tmp/hmongx_cert_key \
+            --save || true
+
+          # Lay/tao provisioning profile cho bundle id
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
+            --certificate-key=@file:/tmp/hmongx_cert_key \
             --create
 
           keychain add-certificates
