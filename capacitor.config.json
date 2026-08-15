@@ -9,7 +9,8 @@
   },
   "ios": {
     "contentInset": "always",
-    "backgroundColor": "#0d1836"
+    "backgroundColor": "#0d1836",
+    "appendUserAgent": "HmongXiOS"
   },
   "plugins": {
     "SplashScreen": {

@@ -26,6 +26,75 @@ workflows:
     artifacts:
       - ios/App/build/Build/Products/**/*.app
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # NOP APP STORE — ky code + xuat .ipa + day len TestFlight/App Store Connect
+  #
+  # Trang thai 15/08/2026:
+  #   ✅ Tai khoan Apple Developer ACTIVE — Team ID A4XPMY5ZB8
+  #   ✅ App da tao tren App Store Connect — Apple ID 6801789131, bundle com.hmongx.app
+  #   ✅ App Store Connect API key da tao — Issuer 9bbbab4e-b125-455c-8c24-727bcf0b74dd,
+  #      Key ID 8484N8P7UM (file .p8 giu o may Aib, KHONG dua vao repo)
+  #   ⏳ Con lai: tren Codemagic → Teams → Integrations → App Store Connect,
+  #      them key tren voi TEN DUNG LA:  hmongx-asc  (workflow goi dung ten nay)
+  # ─────────────────────────────────────────────────────────────────────────
+  ios-appstore:
+    name: HMONG X iOS - NOP APP STORE
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: hmongx-asc
+    environment:
+      node: 22
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.hmongx.app
+      vars:
+        BUNDLE_ID: "com.hmongx.app"
+        APP_STORE_APPLE_ID: "6801789131"   # Apple ID cua app tren App Store Connect (tao 15/08/2026)
+    scripts:
+      - name: Cai dat npm
+        script: npm install
+      - name: Capacitor sync iOS
+        script: npx cap sync ios
+      - name: Lay chung chi + profile ky code
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Danh so ban dung (build number) tang dan
+        script: |
+          BN=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          agvtool new-version -all $(($BN + 1))
+        working_directory: ios/App
+      - name: Build va xuat .ipa
+        script: |
+          xcode-project build-ipa \
+            --project ios/App/App.xcodeproj \
+            --scheme App \
+            --config Release
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - ios/App/build/Build/Products/**/*.dSYM.zip
+    publishing:
+      app_store_connect:
+        auth: integration
+        # BAT DAU bang TestFlight thoi — KHONG tu gui duyet ban public.
+        # Chay ngon roi, doi submit_to_app_store: true khi muon nop that.
+        submit_to_testflight: true
+        submit_to_app_store: false
+      email:
+        recipients:
+          - hmong4svn@gmail.com
+        notify:
+          success: true
+          failure: true
+
   android-apk:
     name: HMONG X Android APK
     instance_type: mac_mini_m2
