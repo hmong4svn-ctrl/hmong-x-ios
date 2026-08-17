@@ -9,13 +9,13 @@
   },
   "ios": {
     "contentInset": "always",
-    "backgroundColor": "#0d1836",
+    "backgroundColor": "#F7F5F1",
     "appendUserAgent": "HmongXiOS"
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 1200,
-      "backgroundColor": "#0d1836",
+      "backgroundColor": "#F7F5F1",
       "showSpinner": false,
       "launchAutoHide": true
     },
