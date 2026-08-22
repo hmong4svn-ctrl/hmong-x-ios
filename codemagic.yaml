@@ -152,5 +152,16 @@ workflows:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
+      - name: Day APK len may chu de co link tai
+        script: |
+          # Codemagic doi dang nhap moi cho tai artifact, nen chinh may build day thang
+          # file sang VPS. Cua nhan ben do co ma bao ve va se bi xoa sau khi lay xong.
+          APK=$(find android -name "*.apk" | head -1)
+          echo "day len: $APK"
+          curl -s -X POST https://hmongx.com/api/tam-nhan-apk \
+            -H "x-ma: adc5522ea5c8ba580d618b17bf861907" \
+            --data-binary "@$APK" | head -c 200
+          echo ""
+
     artifacts:
       - android/app/build/outputs/**/*.apk
