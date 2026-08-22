@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,7 +8,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // 21/08/2026 — VI SAO CO KHOI NAY:
+        // Aib bao "bam nut doc tieng Mong ma khong ra tieng" tren app TestFlight, trong khi mo
+        // hmongx.com bang Safari thi nghe binh thuong. Nguyen nhan: WKWebView mac dinh dung nhom
+        // am thanh .ambient — nhom nay BI TAT HAN khi nguoi dung gat nut im lang ben hong may,
+        // va bi lan khi co app khac dang phat nhac. Doi sang .playback thi tieng doc van keu
+        // du may dang gat im lang, dung nhu mot app nghe nhac.
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("[HmongX] khong dat duoc che do am thanh: \(error)")
+        }
         return true
     }
 
