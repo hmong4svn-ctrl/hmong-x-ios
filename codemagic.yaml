@@ -73,13 +73,30 @@ workflows:
           # app-store-connect KHONG tu sinh khoa RSA — no doi minh dua khoa vao
           # de ky yeu cau tao chung chi (CSR).
           # => Sinh khoa RSA ngay tai day roi truyen vao ca 2 lenh.
-          ssh-keygen -t rsa -b 2048 -m PEM -f /tmp/hmongx_cert_key -q -N ""
-
-          # Tao distribution certificate (bo qua neu da co)
-          app-store-connect certificates create \
-            --type IOS_DISTRIBUTION \
-            --certificate-key=@file:/tmp/hmongx_cert_key \
-            --save || true
+          # ⚠️ SUA 22/08/2026 — MOI BUILD DE MOT CHUNG CHI MOI.
+          # Truoc day khoa RSA sinh vao /tmp, ma may Codemagic sach sau moi lan chay
+          # => moi build tao them 1 distribution certificate trong tai khoan Apple.
+          # Apple chi cho vai cai. Build 1.0(1) va 1.0(2) da dot khoang 2 cai roi.
+          #
+          # Cach dung DUNG: Aib tu sinh khoa MOT LAN roi dan vao bien moi truong
+          # ma hoa CERTIFICATE_PRIVATE_KEY tren Codemagic (Claude khong dan credential ho).
+          #   ssh-keygen -t rsa -b 2048 -m PEM -f hmongx_cert_key -q -N ""
+          #   -> mo file hmongx_cert_key, copy TOAN BO noi dung, dan vao Codemagic
+          #      (Environment variables, group ios_signing, tick Secure)
+          # Khi da co bien do thi khong tao them chung chi nao nua.
+          if [ -n "$CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "Dung khoa co dinh tu bien moi truong — KHONG tao them chung chi."
+            echo "$CERTIFICATE_PRIVATE_KEY" > /tmp/hmongx_cert_key
+            chmod 600 /tmp/hmongx_cert_key
+          else
+            echo "!!! CANH BAO: chua co CERTIFICATE_PRIVATE_KEY — build nay se DE THEM 1 CHUNG CHI."
+            echo "!!! Xem huong dan ngay tren trong codemagic.yaml de dan khoa co dinh."
+            ssh-keygen -t rsa -b 2048 -m PEM -f /tmp/hmongx_cert_key -q -N ""
+            app-store-connect certificates create \
+              --type IOS_DISTRIBUTION \
+              --certificate-key=@file:/tmp/hmongx_cert_key \
+              --save || true
+          fi
 
           # Lay/tao provisioning profile cho bundle id
           app-store-connect fetch-signing-files "$BUNDLE_ID" \

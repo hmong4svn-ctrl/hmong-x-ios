@@ -28,6 +28,11 @@
 	<string>HMONG X needs photo access so you can choose a picture to edit with AI or set as your profile picture.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>HMONG X needs microphone access so you can speak in Hmong and have the app write down what you say.</string>
+	<!-- App chỉ dùng HTTPS tiêu chuẩn, không có mã hoá riêng ⇒ khai false.
+	     Thiếu khoá này thì mỗi lần đẩy build lên App Store Connect đều bị hỏi tay
+	     câu về xuất khẩu mã hoá. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
