@@ -156,10 +156,14 @@ workflows:
         script: |
           # Codemagic doi dang nhap moi cho tai artifact, nen chinh may build day thang
           # file sang VPS. Cua nhan ben do co ma bao ve va se bi xoa sau khi lay xong.
+          # ⚠️ REPO NAY CONG KHAI — TUYET DOI khong de ma trong file nay.
+          # Ma nam o bien moi truong ma hoa APK_UPLOAD_MA tren Codemagic (Aib tu dan).
+          # Chua dat bien thi bo qua buoc nay, build van xong binh thuong.
+          if [ -z "$APK_UPLOAD_MA" ]; then echo "chua co APK_UPLOAD_MA — bo qua buoc day len"; exit 0; fi
           APK=$(find android -name "*.apk" | head -1)
           echo "day len: $APK"
           curl -s -X POST https://hmongx.com/api/tam-nhan-apk \
-            -H "x-ma: adc5522ea5c8ba580d618b17bf861907" \
+            -H "x-ma: $APK_UPLOAD_MA" \
             --data-binary "@$APK" | head -c 200
           echo ""
 
