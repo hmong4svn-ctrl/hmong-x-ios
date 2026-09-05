@@ -19,11 +19,11 @@ curl -s $SITE/app/ | grep -q "Duab Zoo" && ok "bản app nạp được (nút Xo
 echo; echo "3. IAP (3.1.1) — app bán gói thì phải mua được trong app"
 J=$(curl -s $SITE/api/iap-products)
 echo "$J" | grep -q '"ready":true' && ok "máy chủ đã nối khoá Apple (ready:true)" || sai "máy chủ chưa nối Apple: $J"
-for p in anh1 anh5 anh20; do echo "$J" | grep -q "com.hmongx.duabzoo.$p" && ok "gói com.hmongx.duabzoo.$p có trong máy chủ" || sai "thiếu gói $p"; done
+echo "$J" | grep -q "com.hmongx.duabzoo.pro.thang" && ok "thuê bao com.hmongx.duabzoo.pro.thang có trong máy chủ" || sai "thiếu thuê bao pro.thang"; echo "$J" | grep -q paypal:true && ok "PayPal (thẻ Visa trên web) đã nối" || sai "PayPal chưa nối"
 grep -q "cordova-plugin-purchase" $IOS/package.json && ok "vỏ iOS có cordova-plugin-purchase" || sai "vỏ iOS thiếu plugin mua hàng"
 grep -q "DuabZooiOS" $IOS/capacitor.config.json && ok "user-agent DuabZooiOS (web biết đang ở iOS → ẩn Zalo, hiện IAP)" || sai "thiếu appendUserAgent"
 grep -rq "storekit" $IOS/ios/App/App/Info.plist 2>/dev/null; true
-echo "   → PHẢI TỰ KIỂM TAY: 3 IAP trên ASC đúng từng chữ + Paid Apps Active + mua sandbox ra mã DZ"
+echo "   → PHẢI TỰ KIỂM TAY: thuê bao trên ASC có GIÁ + Paid Apps Active + mua sandbox ra mã DZ"
 echo; echo "4. QUYỀN (2.1a) — thiếu là app sập khi chọn ảnh"
 for k in NSCameraUsageDescription NSPhotoLibraryUsageDescription NSPhotoLibraryAddUsageDescription; do grep -q "$k" $IOS/ios/App/App/Info.plist && ok "$k" || sai "thiếu $k"; done
 grep -q "ITSAppUsesNonExemptEncryption" $IOS/ios/App/App/Info.plist && ok "ITSAppUsesNonExemptEncryption khai rồi" || sai "thiếu ITSAppUsesNonExemptEncryption"
