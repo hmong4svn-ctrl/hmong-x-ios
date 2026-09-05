@@ -38,6 +38,15 @@ Chủ sản phẩm: Giàng A Hùng (Cháu Hùng). Tài khoản Apple + máy ch�
 - Máy chủ `/opt/duab-zoo`: `/api/iap-products` (ready:true), `/api/iap-verify` (hỏi Apple, phát mã DZ-…), `/api/iap-cua-toi` (Restore). Khoá IAP team `WD227TA459` dùng chung HMONG X.
 - Web: chạy trong app iOS thì ẩn mọi lời mời mua ngoài, hiện cửa mua App Store ở Cá Nhân và ngay khi hết lượt; nút Restore; trang `/rieng-tu/` có EULA Apple.
 
+## 1b. ĐÃ LÀM THÊM 05/09 tối (em làm, bằng khoá API + Chrome của Aib)
+
+| Việc | Kết quả |
+|---|---|
+| App ID `com.hmongx.duabzoo` | ✅ Tạo qua ASC API (`ops/asc.mjs`), id `L9G7QR8973`, team A4XPMY5ZB8 — Aib KHÔNG cần vào developer.apple.com nữa |
+| Kho mã | ✅ Đẩy lên **nhánh `duab-zoo-ios` trong kho `hmong4svn-ctrl/hmong-x-ios`** (kho công khai, vỏ không chứa khoá). Không tạo app Codemagic mới: dùng app `hmong-x-ios` sẵn có, chọn nhánh này khi build ⇒ tái dùng integration `hmongx-asc` + group `ios_signing` |
+| Codemagic | ✅ Đã chạy workflow `ios-verify` (biên dịch không ký) trên nhánh này — xem kết quả ở codemagic.io/builds |
+| App Store Connect | ⛔ Phiên hết hạn (`authResult=FAILED`), em không được đăng nhập hộ ⇒ **Aib đăng nhập ASC rồi báo em**, em tạo app + 3 IAP + điền hồ sơ qua API/Chrome |
+
 ## 2. CHỈ AIB LÀM ĐƯỢC — theo thứ tự
 
 1. **DNS**: quét QR Mắt Bão, em thêm A `duab → 152.42.172.109`, bật Caddy `duab.kubsuav.cloud`. (App trỏ tên miền này; chưa có DNS thì app mở ra trắng.)
