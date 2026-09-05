@@ -68,7 +68,7 @@ workflows:
         # Apple ID cua app DUAB ZOO tren App Store Connect.
         # ĐIỀN SAU KHI TẠO APP TRÊN ASC (App Store Connect → Apps → DUAB ZOO → App Information → Apple ID).
         # De trong thi buoc "Danh so ban dung" tu roi ve build number 1.
-        APP_STORE_APPLE_ID: "0"   # "0" = chua co app tren ASC (Codemagic khong cho de trong); thay bang Apple ID 10 so khi da tao app
+        APP_STORE_APPLE_ID: "6808990045"   # App "Duab Zoo" tren ASC, tao 05/09/2026
     scripts:
       - name: Cai dat npm
         script: npm install
