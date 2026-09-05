@@ -1,0 +1,23 @@
+{
+  "appId": "com.hmongx.duabzoo",
+  "appName": "Duab Zoo",
+  "webDir": "www",
+  "server": {
+    "url": "https://duab.kubsuav.cloud",
+    "cleartext": false,
+    "allowNavigation": ["duab.kubsuav.cloud", "*.kubsuav.cloud", "duab.152-42-172-109.sslip.io"]
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#251357",
+    "appendUserAgent": "DuabZooiOS"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1000,
+      "backgroundColor": "#251357",
+      "showSpinner": false,
+      "launchAutoHide": true
+    }
+  }
+}
