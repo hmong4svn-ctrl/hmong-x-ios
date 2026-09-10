@@ -1,0 +1,15 @@
+{
+  "name": "hmong-lus-ios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vo iOS cho HMONG LUS - app nghe dab neeg Hmoob",
+  "dependencies": {
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/browser": "^6.0.2",
+    "@capacitor/splash-screen": "^6.0.2",
+    "cordova-plugin-purchase": "^13.11.1"
+  },
+  "devDependencies": { "@capacitor/cli": "^6.1.2" }
+}

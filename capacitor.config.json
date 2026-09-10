@@ -1,0 +1,28 @@
+{
+  "appId": "com.hmongx.lus",
+  "appName": "Hmong Lus",
+  "webDir": "www",
+  "server": {
+    "url": "https://lus.152-42-172-109.sslip.io",
+    "cleartext": false,
+    "allowNavigation": [
+      "lus.152-42-172-109.sslip.io",
+      "accounts.google.com", "*.google.com",
+      "appleid.apple.com",
+      "*.facebook.com", "connect.facebook.net"
+    ]
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#08090C",
+    "appendUserAgent": "HmongLusIOS"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#08090C",
+      "showSpinner": false,
+      "launchAutoHide": true
+    }
+  }
+}

@@ -1,0 +1,114 @@
+# ════════════════════════════════════════════════════════════════════════
+# HMONG LUS — vo iOS (Capacitor) tro thang toi app that
+#   bundle : com.hmongx.lus
+#   Apple ID cua app tren ASC : 6810513951
+#   Team ID : A4XPMY5ZB8
+#   Tich hop ASC tren Codemagic phai dat TEN DUNG LA:  hmongx-asc
+#
+# CHAY WORKFLOW 1 (ios-verify) TRUOC — no bat loi dich ma khong ton vong build ky.
+# ════════════════════════════════════════════════════════════════════════
+workflows:
+  ios-verify:
+    name: HMONG LUS iOS - kiem tra build
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 22
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Cai dat npm
+        script: npm install
+      - name: Capacitor sync iOS
+        script: npx cap sync ios
+      - name: Build iOS (khong ky - chi kiem tra bien dich)
+        script: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath ios/App/build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+    artifacts:
+      - ios/App/build/Build/Products/**/*.app
+
+  ios-appstore:
+    name: HMONG LUS iOS - NOP APP STORE
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    integrations:
+      app_store_connect: hmongx-asc
+    environment:
+      node: 22
+      xcode: latest
+      cocoapods: default
+      # ⚠️ KHONG dung khoi "ios_signing" — no bat Codemagic di TIM profile CO SAN
+      # truoc khi chay script; chua co profile thi build chet ngay.
+      groups:
+        - ios_signing        # noi chua CERTIFICATE_PRIVATE_KEY (Aib tu dan, co danh dau Secret)
+      vars:
+        BUNDLE_ID: "com.hmongx.lus"
+        APP_STORE_APPLE_ID: "6810513951"
+    scripts:
+      - name: Cai dat npm
+        script: npm install
+      - name: Capacitor sync iOS
+        script: npx cap sync ios
+      - name: Lay chung chi + profile ky code
+        script: |
+          set -e
+          keychain initialize
+          # 🔴 CHOT CHAN — GIU NGUYEN, DUNG GO.
+          # Build khong co khoa co dinh se DE THEM MOT CHUNG CHI PHAN PHOI MOI.
+          # Apple chi cho vai cai. Chot nay dung TRUOC khau ky nen chay thu vo hai.
+          if [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "════════════════════════════════════════════════════════"
+            echo "DUNG BUILD: chua co bien CERTIFICATE_PRIVATE_KEY."
+            echo "Cach lam: tren may Aib chay"
+            echo "    cat ~/.hmongx-keys/khovideo_cert_key | pbcopy"
+            echo "roi dan vao Codemagic → Environment variables:"
+            echo "    ten   : CERTIFICATE_PRIVATE_KEY"
+            echo "    nhom  : ios_signing"
+            echo "    Secret: tick"
+            echo "⚠️ Codemagic CHI LUU KHI BAM nut 'Add'."
+            echo "════════════════════════════════════════════════════════"
+            exit 1
+          fi
+          echo "$CERTIFICATE_PRIVATE_KEY" > /tmp/hl_cert_key
+          chmod 600 /tmp/hl_cert_key
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --certificate-key=@file:/tmp/hl_cert_key \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Danh so ban dung tang dan
+        script: |
+          BN=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          agvtool new-version -all $(($BN + 1))
+        working_directory: ios/App
+      - name: Build va xuat .ipa
+        script: |
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcworkspace \
+            --scheme App \
+            --config Release
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        # Chi day len ASC. KHONG tu gui duyet — Claude nop bang API sau khi kiem lai.
+        submit_to_testflight: false
+        submit_to_app_store: false
+      email:
+        recipients:
+          - hmong4svn@gmail.com
+        notify:
+          success: true
+          failure: true
