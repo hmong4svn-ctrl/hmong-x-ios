@@ -7,9 +7,12 @@
     "cleartext": false,
     "allowNavigation": [
       "lus.152-42-172-109.sslip.io",
-      "accounts.google.com", "*.google.com",
+      "hmonglus.hmongx.com",
+      "accounts.google.com",
+      "*.google.com",
       "appleid.apple.com",
-      "*.facebook.com", "connect.facebook.net"
+      "*.facebook.com",
+      "connect.facebook.net"
     ]
   },
   "ios": {
@@ -24,5 +27,10 @@
       "showSpinner": false,
       "launchAutoHide": true
     }
+  },
+  "android": {
+    "appendUserAgent": "HmongLusAndroid",
+    "backgroundColor": "#08090C",
+    "allowMixedContent": false
   }
 }
