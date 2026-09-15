@@ -3,9 +3,10 @@
   "appName": "Hmong Lus",
   "webDir": "www",
   "server": {
-    "url": "https://lus.152-42-172-109.sslip.io",
+    "url": "https://lus.kubsuav.cloud",
     "cleartext": false,
     "allowNavigation": [
+      "lus.kubsuav.cloud",
       "lus.152-42-172-109.sslip.io",
       "hmonglus.hmongx.com",
       "accounts.google.com",
