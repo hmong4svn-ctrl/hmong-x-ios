@@ -14,7 +14,8 @@
       "appleid.apple.com",
       "*.facebook.com",
       "connect.facebook.net"
-    ]
+    ],
+    "errorPath": "loi.html"
   },
   "ios": {
     "contentInset": "always",
@@ -23,7 +24,7 @@
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 1200,
+      "launchShowDuration": 2000,
       "backgroundColor": "#08090C",
       "showSpinner": false,
       "launchAutoHide": true
